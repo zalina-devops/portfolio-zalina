@@ -475,9 +475,9 @@ const Dot = styled.span`
 `;
 
 const SoundToggle = styled.button`
-  background: ${props => props.active ? 'rgba(0, 255, 65, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${props => props.active ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255, 255, 255, 0.1)'};
-  color: ${props => props.active ? theme.green : '#666'};
+  background: ${props => props.$active ? 'rgba(0, 255, 65, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${props => props.$active ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.$active ? theme.green : '#666'};
   border-radius: 6px;
   padding: 4px 8px;
   font-size: 11px;
@@ -488,7 +488,7 @@ const SoundToggle = styled.button`
 
   &:hover {
     border-color: ${theme.green}40;
-    color: ${props => props.active ? theme.green : '#999'};
+    color: ${props => props.$active ? theme.green : '#999'};
   }
 `;
 
@@ -1584,6 +1584,34 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [promptFlash, setPromptFlash] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
+  const [typedWelcome, setTypedWelcome] = useState('');
+const [showCursor, setShowCursor] = useState(true);
+
+const welcomeText = `> Kernel v19.07.2026 | Uptime: 19 years
+> Specialization: 09.02.07 | Node: Moscow
+> Type 'help' to explore.
+> Click anywhere + type = sound!
+> Drag header to move window!`;
+
+useEffect(() => {
+    let i = 0;
+    const typeInterval = setInterval(() => {
+      if (i < welcomeText.length) {
+        setTypedWelcome(welcomeText.slice(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typeInterval);
+      }
+    }, 15);
+    
+    const blinkInterval = setInterval(() => setShowCursor(prev => !prev), 500);
+    
+    return () => {
+      clearInterval(typeInterval);
+      clearInterval(blinkInterval);
+    };
+  }, []);
+  const [isMinimized, setIsMinimized] = useState(false);
   const inputRef = useRef(null);
   const bodyRef = useRef(null);
 
@@ -1597,7 +1625,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
     { cmd: 'contact', label: '📬 contact', color: '#ffb86c', desc: 'Контакты' },
 	{ cmd: 'resume', label: '📄 resume', color: '#50fa7b', desc: 'Скачать PDF-резюме' },
     { cmd: 'matrix', label: '🌧️ matrix', color: '#00ff41', desc: 'Пасхалка' },
-    { cmd: 'game', label: '🎮 играть', color: '#8be9fd', desc: 'Взломай сервер (8 попыток)' },
+    { cmd: 'game', label: '🎮 game', color: '#8be9fd', desc: 'Взломай сервер (8 попыток)' },
   ];
 
   useEffect(() => {
@@ -1734,14 +1762,14 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
   const terminalContent = (
     <TerminalCard isPopup={isPopup}>
       <TerminalHeader>
-        <Dot color="#ff5f56" onClick={() => executeCommand('clear')} />
-        <Dot color="#ffbd2e" />
-        <Dot color="#27c93f" />
+        <Dot color="#ff5f56" onClick={() => executeCommand('clear')} title="Clear terminal" />
+        <Dot color="#ffbd2e" onClick={() => setIsMinimized(!isMinimized)} title={isMinimized ? 'Expand' : 'Minimize'} />
+        <Dot color="#27c93f" onClick={() => onSpecialCommand?.('float')} title="Pop out window" />
         <span style={{ marginLeft: '10px', fontSize: '12px', color: '#666', fontFamily: 'JetBrains Mono' }}>
           zalina@kernel:~/portfolio
         </span>
         <SoundToggle 
-          active={keyboardSound.soundEnabled} 
+          $active={keyboardSound.soundEnabled} 
           onClick={keyboardSound.toggleSound}
           title={keyboardSound.soundEnabled ? 'Sound ON' : 'Sound OFF'}
         >
@@ -1749,6 +1777,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
         </SoundToggle>
       </TerminalHeader>
       
+      {!isMinimized && <>
       <TerminalBody ref={bodyRef}>
         <div style={{ textAlign: 'center', overflow: 'hidden' }}>
         <PreBlock color="#6272a4" style={{ display: 'inline-block', textAlign: 'left' }}>
@@ -1764,12 +1793,8 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
       </div>
         
         <PreBlock color="#6272a4">
-{`> Kernel v19.07.2026 | Uptime: 19 years
-> Specialization: 09.02.07 | Node: Moscow
-> Type 'help' to explore.
-> 🔊 Mechanical keyboard sounds enabled!
-> 🖱️ Drag the header to move this window!
-`}
+          {typedWelcome}
+          <span style={{ opacity: showCursor ? 1 : 0, color: '#00ff41' }}>_</span>
         </PreBlock>
 
         {history.map((item, index) => (
@@ -1798,6 +1823,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
         </SuggestionChip>
         ))}
       </SuggestionsBar>
+      </>}
 
       <InputLine>
         <Prompt className={promptFlash ? 'flash' : ''}>❯</Prompt>
@@ -1935,13 +1961,8 @@ const DraggableTerminal = ({ onSpecialCommand, projects, projectsLoading, keyboa
             cursor: 'pointer',
           }}
         >
-          {isFloating ? '📌 Закрепить обратно' : '🖱️ Открепить и таскать'}
+          {isFloating ? '📌 Закрепить обратно' : '🖱️ Открепить'}
         </button>
-        {isFloating && (
-          <span style={{ marginLeft: '10px', fontSize: '11px', color: '#666', fontFamily: 'JetBrains Mono' }}>
-            ↕️ Хватай за заголовок и тащи!
-          </span>
-        )}
       </div>
 
       {isFloating && <div style={{ height: '400px' }} />}
@@ -1963,12 +1984,15 @@ const DraggableTerminal = ({ onSpecialCommand, projects, projectsLoading, keyboa
         onTouchStart={handleTouchStart}
       >
         <Terminal
-          onSpecialCommand={onSpecialCommand}
-          projects={projects}
-          projectsLoading={projectsLoading}
-          keyboardSound={keyboardSound}
-          gameProps={gameProps}
-          isPopup={true}
+            onSpecialCommand={(cmd) => {
+              if (cmd === 'float') handleToggleFloat();
+              else onSpecialCommand?.(cmd);
+            }}
+            projects={projects}
+            projectsLoading={projectsLoading}
+            keyboardSound={keyboardSound}
+            gameProps={gameProps}
+            isPopup={true}
         />
       </div>
     </div>

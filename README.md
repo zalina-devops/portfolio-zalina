@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/status-active-00ff41?style=for-the-badge" alt="Status" />
+<img src="https://img.shields.io/badge/status-active-00cc34?style=for-the-badge" alt="Status" />
 <img src="https://img.shields.io/badge/version-1.0-4dabf7?style=for-the-badge" alt="Version" />
 <img src="https://img.shields.io/badge/deployed-Vercel-black?style=for-the-badge" alt="Deployment" />
 
@@ -8,7 +8,7 @@
 
 ### Интерактивное терминальное портфолио
 
-[![Site](https://img.shields.io/badge/🌐_Live_Site-portfolio--zalina.vercel.app-00ff41?style=for-the-badge)](https://portfolio-zalina.vercel.app)
+[![Site](https://img.shields.io/badge/🌐_Live_Site-portfolio--zalina.vercel.app-00cc34?style=for-the-badge)](https://portfolio-zalina.vercel.app)
 [![GitHub](https://img.shields.io/badge/🐙_GitHub-zalina--devops-9775fa?style=for-the-badge)](https://github.com/zalina-devops)
 
 </div>
@@ -47,7 +47,7 @@
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite)
 ![Styled Components](https://img.shields.io/badge/Styled--Components-DB7093?style=for-the-badge&logo=styled-components)
-![Canvas API](https://img.shields.io/badge/Canvas-00ff41?style=for-the-badge&logo=html5)
+![Canvas API](https://img.shields.io/badge/Canvas-00cc34?style=for-the-badge&logo=html5)
 ![Web Audio API](https://img.shields.io/badge/Web_Audio-4dabf7?style=for-the-badge)
 ![GitHub API](https://img.shields.io/badge/GitHub_API-181717?style=for-the-badge&logo=github)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel)

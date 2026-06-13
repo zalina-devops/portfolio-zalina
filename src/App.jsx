@@ -1381,6 +1381,136 @@ const createCommands = (projects, projectsLoading, startGame, makeAttempt) => ({
     special: 'toggleSound'
   })
 });
+
+// ============ NEURAL NETWORK BACKGROUND ============
+const NeuralNetwork = () => {
+  const canvasRef = useRef(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+
+    // Частицы
+    const particleCount = 80;
+    const particles = [];
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 1;
+        this.color = ['#00ff41', '#4dabf7', '#9775fa'][Math.floor(Math.random() * 3)];
+      }
+      
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        // Отскок от краёв
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        
+        // Лёгкое притяжение к мыши
+        const dx = mouseRef.current.x - this.x;
+        const dy = mouseRef.current.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          this.vx += dx / dist * 0.02;
+          this.vy += dy / dist * 0.02;
+        }
+      }
+      
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+    
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Рисуем связи
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            const opacity = 1 - dist / 150;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0, 255, 65, ${opacity * 0.1})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Обновляем и рисуем частицы
+      particles.forEach(p => {
+        p.update();
+        p.draw(ctx);
+      });
+    };
+
+    const animate = () => {
+      draw();
+      requestAnimationFrame(animate);
+    };
+
+    const handleMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const animationId = requestAnimationFrame(animate);
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        opacity: 0.6,
+        pointerEvents: 'none',
+      }}
+    />
+  );
+};
+
 // ============ MATRIX RAIN ============
 const MatrixRain = ({ active }) => {
   const canvasRef = useRef(null);
@@ -1879,9 +2009,11 @@ function App() {
     <>
       <GlobalStyles />
       <AppContainer>
-        <MatrixRain active={matrixActive} />
-        <GlitchOverlay active={glitchActive} />
-        <CrtOverlay active={matrixActive} />
+		<NeuralNetwork />
+		<MatrixRain active={matrixActive} />
+		<GlitchOverlay active={glitchActive} />
+		<CrtOverlay active={matrixActive} />
+		
 		
         <MainLayout>
           {/* HEADER */}

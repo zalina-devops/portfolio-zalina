@@ -1524,9 +1524,6 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
       setHistory(prev => [...prev, { type: 'output', text: result.output, color: result.color }]);
       return result;
     } else if (cmd !== '') {
-      
-	  } else if (cmd !== '') {
-      console.log('🔥 GLITCH TRIGGERED'); // ← ДОБАВЬ
       setGlitchActive(true);
       setTimeout(() => setGlitchActive(false), 600);
       

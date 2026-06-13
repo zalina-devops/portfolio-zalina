@@ -30,6 +30,33 @@ const GlobalStyles = createGlobalStyle`
     background: #00ff41;
     color: #000;
   }
+
+    ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ff41, #4dabf7, #9775fa);
+    border-radius: 3px;
+    animation: scrollGlow 2s ease-in-out infinite;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00ff41;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  }
+  
+  @keyframes scrollGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 65, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(0, 255, 65, 0.6), 0 0 30px rgba(77, 171, 247, 0.3); }
+  }
+  
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #00ff41 rgba(0, 0, 0, 0.3);
+  }
 `;
 
 // ============ THEME ============
@@ -312,6 +339,7 @@ const GlassCard = styled.div`
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  transform: translate(${props => props.$offsetX || 0}px, ${props => props.$offsetY || 0}px);
 
   &::before {
     content: '';
@@ -325,8 +353,8 @@ const GlassCard = styled.div`
 
   &:hover {
     border-color: rgba(0, 255, 65, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: translate(${props => props.$offsetX || 0}px, ${props => props.$offsetY || 0}px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 255, 65, 0.05);
   }
 `;
 
@@ -524,18 +552,18 @@ const SuggestionChip = styled.button`
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   white-space: nowrap;
 
   &:hover {
     background: ${props => props.color}25;
     border-color: ${props => props.color}60;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px ${props => props.color}20;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 4px 15px ${props => props.color}30;
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
 `;
 
@@ -743,7 +771,7 @@ const TimelineItem = styled.div`
 `;
 
 const TimelineYear = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   color: ${props => props.color || theme.green};
   font-family: 'JetBrains Mono', monospace;
   margin-bottom: 4px;
@@ -757,7 +785,7 @@ const TimelineTitle = styled.h3`
 `;
 
 const TimelineDesc = styled.p`
-  font-size: 12px;
+  font-size: 13px;
   color: #888;
   line-height: 1.5;
 `;
@@ -766,7 +794,7 @@ const TimelineBadge = styled.span`
   display: inline-block;
   padding: 2px 8px;
   border-radius: 4px;
-  font-size: 10px;
+  font-size: 11px;
   font-family: 'JetBrains Mono', monospace;
   background: ${props => props.bg || 'rgba(0,255,65,0.1)'};
   color: ${props => props.color || theme.green};
@@ -811,7 +839,7 @@ const ContactIcon = styled.span`
 
 // ============ DATA ============
 const profile = {
-  name: 'Zalina',
+  name: 'Zalina Aliskerova',
   tagline: 'Student • DevOps Enthusiast • Future Cybersecurity Engineer',
   status: 'Open to opportunities',
   age: 19,
@@ -851,42 +879,42 @@ const profile = {
 };
 const timeline = [
   {
-    year: '2024',
+    year: '2023',
     title: 'Начало пути',
-    desc: 'Поступила в Московский колледж на специальность 09.02.07 «Информационная безопасность». Первое знакомство с Linux, сетями и кибербезопасностью.',
+    desc: 'Поступила в Московский колледж на специальность 09.02.07 «Информационные системы и программирование». Общеобразовательная программа.',
     color: theme.green,
     badge: 'Старт'
   },
   {
-    year: '2025',
+    year: '2024',
     title: 'Первые проекты',
-    desc: 'Освоила Python и Bash. Начала вести GitHub. Запустила первый пет-проект — сканер портов. Изучила основы Docker и CI/CD.',
+    desc: 'Знакомство с Python и Bash. Базы данных, основы алгоритмизации и программирования, разработка программных модулей, поддержка и тестирование программных модулей, технология разработки и защиты баз данных, поддержка и тестирование программных модулей.',
     color: theme.blue,
-    badge: 'GitHub'
+    badge: 'Начало'
   },
   {
-    year: '2026',
+    year: '2025-2026',
     title: 'Погружение в DevOps',
-    desc: 'Активно изучаю Docker, GitHub Actions, Kubernetes. Углубляюсь в автоматизацию и мониторинг. Участвую в CTF-соревнованиях.',
+    desc: 'Активно изучаю Docker, GitHub Actions. Создание приложения с графическим интерфейсом, создание полноценного клиент-серверного приложения для учёта личных финансов, самостоятельная разработка полноценного парсера, разработка структуры и интерфейса информационной системы в 1С:Предприятие.',
     color: theme.purple,
     badge: 'Сейчас'
   },
   {
-    year: '2027',
+    year: '2028',
     title: 'Диплом и стажировка',
     desc: 'Защита диплома. План: пройти стажировку в DevOps-команде. Получить сертификаты (AWS, Azure, CKA).',
     color: '#ffb86c',
     badge: 'План'
   },
   {
-    year: '2028',
+    year: '2029',
     title: 'Университет',
     desc: 'Поступление в вуз на прикладную информатику или кибербезопасность. Совмещение учёбы с работой Junior DevOps Engineer.',
     color: '#ff79c6',
     badge: 'Цель'
   },
   {
-    year: '2030',
+    year: '2034',
     title: 'Senior DevOps Engineer',
     desc: 'Цель: стать senior-специалистом. Строить надёжные облачные инфраструктуры. Менторить джуниоров.',
     color: '#8be9fd',
@@ -1999,6 +2027,25 @@ const DraggableTerminal = ({ onSpecialCommand, projects, projectsLoading, keyboa
   );
 };
 
+// ============ PARALLAX HOOK ============
+const useParallax = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth - 0.5) * 2, // от -1 до 1
+        y: (e.clientY / window.innerHeight - 0.5) * 2,
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return mousePos;
+};
+
 // ============ MAIN APP ============
 function App() {
   const [activeTab, setActiveTab] = useState('terminal');
@@ -2007,6 +2054,7 @@ function App() {
   const { projects, loading: projectsLoading } = useGitHubProjects('zalina-devops');
   const keyboardSound = useKeyboardSound();
   const gameHook = useHackGame();
+  const mousePos = useParallax();
 
 
   const handleSpecialCommand = (special) => {
@@ -2051,7 +2099,7 @@ function App() {
           </HeaderCard>
 
           {/* TABS */}
-          <GlassCard>
+          <GlassCard $offsetX={mousePos.x * -5} $offsetY={mousePos.y * -5}>
             <TabsContainer>
               {tabs.map(tab => (
                 <Tab
@@ -2074,7 +2122,7 @@ function App() {
             gameProps={gameHook}
          />}
           {activeTab === 'timeline' && (
-            <GlassCard>
+            <GlassCard $offsetX={mousePos.x * -5} $offsetY={mousePos.y * -5}>
                 <TimelineContainer>
                 {timeline.map((item, i) => (
                     <TimelineItem key={i} color={item.color}>
@@ -2096,7 +2144,7 @@ function App() {
 
 
           {activeTab === 'skills' && (
-            <GlassCard>
+            <GlassCard $offsetX={mousePos.x * -5} $offsetY={mousePos.y * -5}>
               <SkillsGrid>
                 {profile.skills.map((cat, i) => (
                   <SkillCategory key={i}>
@@ -2122,7 +2170,7 @@ function App() {
           )}
 
           {activeTab === 'projects' && (
-            <GlassCard>
+            <GlassCard $offsetX={mousePos.x * -5} $offsetY={mousePos.y * -5}>
               {projectsLoading ? (
                 <LoadingSpinner>⏳ Loading projects from GitHub...</LoadingSpinner>
               ) : (
@@ -2144,7 +2192,7 @@ function App() {
           )}
 
           {activeTab === 'contact' && (
-            <GlassCard>
+            <GlassCard $offsetX={mousePos.x * -5} $offsetY={mousePos.y * -5}>
               <ContactGrid>
                 <ContactLink href={profile.contact.github} target="_blank">
                   <ContactIcon>🐙</ContactIcon>

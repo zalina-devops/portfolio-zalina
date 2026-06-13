@@ -57,20 +57,30 @@ const gradientShift = keyframes`
 `;
 
 const glitchEffect = keyframes`
-  0% { transform: translate(0); }
-  20% { transform: translate(-3px, 2px); }
-  40% { transform: translate(3px, -1px); }
-  60% { transform: translate(-2px, -2px); }
-  80% { transform: translate(1px, 3px); }
-  100% { transform: translate(0); }
+  0% { transform: translate(0); filter: hue-rotate(0deg); }
+  10% { transform: translate(-5px, 3px); filter: hue-rotate(90deg); }
+  20% { transform: translate(5px, -2px); filter: hue-rotate(-90deg); }
+  30% { transform: translate(-3px, -4px); }
+  40% { transform: translate(4px, 2px); filter: hue-rotate(180deg); }
+  50% { transform: translate(-2px, 5px); }
+  60% { transform: translate(6px, -3px); filter: hue-rotate(-180deg); }
+  70% { transform: translate(-5px, -2px); }
+  80% { transform: translate(3px, 4px); filter: hue-rotate(90deg); }
+  90% { transform: translate(-1px, -5px); }
+  100% { transform: translate(0); filter: hue-rotate(0deg); }
 `;
 
 const glitchClip = keyframes`
   0% { clip-path: inset(0 0 0 0); }
-  10% { clip-path: inset(20% 0 60% 0); }
-  20% { clip-path: inset(40% 0 40% 0); }
-  30% { clip-path: inset(60% 0 20% 0); }
-  40% { clip-path: inset(0 0 0 0); }
+  10% { clip-path: inset(10% 0 80% 0); }
+  20% { clip-path: inset(30% 0 50% 0); }
+  30% { clip-path: inset(60% 0 30% 0); }
+  40% { clip-path: inset(80% 0 10% 0); }
+  50% { clip-path: inset(40% 0 40% 0); }
+  60% { clip-path: inset(0 0 60% 0); }
+  70% { clip-path: inset(50% 0 0 0); }
+  80% { clip-path: inset(20% 0 70% 0); }
+  90% { clip-path: inset(70% 0 20% 0); }
   100% { clip-path: inset(0 0 0 0); }
 `;
 
@@ -219,9 +229,31 @@ const GlitchOverlay = styled.div`
   height: 100vh;
   pointer-events: none;
   z-index: 9999;
+  opacity: ${props => props.active ? 1 : 0};
+  transition: opacity 0.1s;
   animation: ${props => props.active ? glitchEffect : 'none'} 0.3s ease-in-out;
   
-  &::before,
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 255, 65, 0.15) 0%,
+      transparent 10%,
+      rgba(255, 0, 234, 0.1) 20%,
+      transparent 30%,
+      rgba(0, 255, 65, 0.15) 50%,
+      transparent 70%,
+      rgba(255, 0, 234, 0.1) 85%,
+      transparent 100%
+    );
+    animation: ${props => props.active ? glitchClip : 'none'} 0.15s infinite;
+  }
+  
   &::after {
     content: '';
     position: absolute;
@@ -229,19 +261,14 @@ const GlitchOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
-    opacity: ${props => props.active ? 1 : 0};
-    transition: opacity 0.1s;
-  }
-  
-  &::before {
-    background: rgba(0, 255, 65, 0.05);
-    animation: ${props => props.active ? glitchClip : 'none'} 0.2s infinite;
-  }
-  
-  &::after {
-    background: rgba(255, 0, 234, 0.03);
-    animation: ${props => props.active ? glitchClip : 'none'} 0.15s infinite reverse;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 255, 255, 0.03) 3px,
+      rgba(255, 255, 255, 0.03) 6px
+    );
+    animation: ${props => props.active ? glitchClip : 'none'} 0.2s infinite reverse;
   }
 `;
 
@@ -1501,7 +1528,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
 	  } else if (cmd !== '') {
       console.log('🔥 GLITCH TRIGGERED'); // ← ДОБАВЬ
       setGlitchActive(true);
-      setTimeout(() => setGlitchActive(false), 400);
+      setTimeout(() => setGlitchActive(false), 600);
       
       setHistory(prev => [...prev, {
         type: 'output',
@@ -1839,7 +1866,7 @@ function App() {
     if (special === 'glitch') {
       console.log('💥 GLITCH RECEIVED IN APP'); // ← ДОБАВЬ
       setGlitchActive(true);
-      setTimeout(() => setGlitchActive(false), 500);
+      setTimeout(() => setGlitchActive(false), 700);
     }
   };
 

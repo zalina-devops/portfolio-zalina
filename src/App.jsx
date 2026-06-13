@@ -1288,24 +1288,30 @@ const createCommands = (projects, projectsLoading, startGame, makeAttempt) => ({
     };
   },
 
-  whoami: () => ({
-    output: `
+  whoami: () => {
+    const lines = [
+      `║  ${profile.name.padEnd(27)}║`,
+      `║  ${`${profile.age} y.o. | ${profile.location}`.padEnd(27)}║`,
+      `╠══════════════════════════════╣`,
+      `║  Student @ Moscow College    ║`,
+      `║  Specialization: 09.02.07   ║`,
+      `║  ${profile.year.padEnd(27)}║`,
+      `║                              ║`,
+      `║  Goal: Applied Informatics   ║`,
+      `║  (Cybersecurity Engineering) ║`,
+    ];
+    
+    return {
+      output: `
 ╔══════════════════════════════╗
-║  ${profile.name}                        ║
-║  ${profile.age} y.o. | ${profile.location}           ║
-╠══════════════════════════════╣
-║  Student @ Moscow College    ║
-║  Specialization: 09.02.07   ║
-║  ${profile.year}                    ║
-║                              ║
-║  Goal: Applied Informatics   ║
-║  (Cybersecurity Engineering) ║
+${lines.join('\n')}
 ╚══════════════════════════════╝
 
 > "${profile.tagline}"
-    `,
-    color: theme.purple
-  }),
+      `,
+      color: theme.purple
+    };
+  },
 
   skills: () => {
     const allSkills = profile.skills.map(cat => 

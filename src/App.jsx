@@ -1393,6 +1393,44 @@ ${lines.join('\n')}
     };
   },
 
+timeline: () => ({
+    output: `
+🛤️  MY JOURNEY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2023 — Started Moscow College
+       Specialization 09.02.07
+       Information Systems & Programming
+
+2024 — First projects
+       Python, Bash, Databases
+       Algorithms & Software Development
+       Database Design & Testing
+
+2025-26 — Deep dive into DevOps
+       Docker, GitHub Actions
+       GUI Applications
+       Client-Server Finance App
+       Custom Parser Development
+       1C:Enterprise System Design
+
+2028 — Diploma & Internship (PLAN)
+       AWS, Azure, CKA certifications
+       DevOps team placement
+
+2029 — University enrollment
+       Applied Informatics or Cybersecurity
+       Junior DevOps Engineer
+
+2034 — Senior DevOps Engineer
+       Cloud infrastructure architect
+       Mentoring juniors
+
+💡 Switch to Timeline tab for visual view!
+    `,
+    color: '#ff79c6'
+  }),
+
   matrix: () => ({
     output: 'Wake up, Neo... The Matrix has you...',
     color: '#00ff41',

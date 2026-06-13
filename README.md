@@ -6,9 +6,9 @@
 
 # ⚡ Portfolio Zalina
 
-### Интерактивное терминальное портфолио DevOps-инженера
+### Интерактивное терминальное портфолио
 
-[![Site](https://img.shields.io/badge/🌐_Live_Site-portfolio--kernel.vercel.app-00ff41?style=for-the-badge)](https://portfolio-kernel.vercel.app)
+[![Site](https://img.shields.io/badge/🌐_Live_Site-portfolio--zalina.vercel.app-00ff41?style=for-the-badge)](https://portfolio-zalina.vercel.app)
 [![GitHub](https://img.shields.io/badge/🐙_GitHub-zalina--devops-9775fa?style=for-the-badge)](https://github.com/zalina-devops)
 
 </div>
@@ -17,7 +17,7 @@
 
 ## 🧠 Концепция
 
-**Portfolio Zalina** — это не обычный сайт-портфолио. Это интерактивная терминальная среда, стилизованная под операционную систему. Посетитель взаимодействует через командную строку, исследуя навыки, проекты и опыт в формате хакерского интерфейса.
+**Portfolio Zalina** — это не обычный сайт-портфолио. Это интерактивная терминальная среда, стилизованная под хакерский интерфейс. Посетитель взаимодействует через командную строку, исследуя навыки, проекты и путь развития в формате настоящего DevOps-окружения.
 
 > *"Turning chaos into configurations."*
 
@@ -83,10 +83,10 @@
 
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/alice27gretter/portfolio-kernel.git
+git clone https://github.com/zalina-devops/portfolio-zalina.git
 
 # Перейти в папку
-cd portfolio-kernel
+cd portfolio-zalina
 
 # Установить зависимости
 npm install
@@ -99,7 +99,7 @@ npm run dev
 
 ## 📂 Структура проекта
 ```
-portfolio-kernel/
+portfolio-zalina/
 ├── public/
 │   └── favicon.svg          # Иконка сайта
 ├── src/
@@ -110,14 +110,13 @@ portfolio-kernel/
 ├── vite.config.js           # Конфигурация Vite
 └── README.md                # Этот файл
 ```
-*Весь код в одном файле App.jsx — архитектурное решение для портфолио.*
+>*Весь код в одном файле App.jsx — архитектурное решение для портфолио.*
 
 ---
 
 ## 🎓 Об авторе
 <table> <tr> <td width="80px"> <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #00ff41, #4dabf7, #9775fa); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff;">Z</div> </td> <td> <b>Zalina Aliskerova</b><br> 🎓 Студентка 3 курса, специальность 09.02.07<br> 📍 Москва, Россия<br> 💼 Open to opportunities </td> </tr> </table>
 
----
 
 ## 📄 Лицензия
 MIT — делай что хочешь, только сохраняй упоминание автора.

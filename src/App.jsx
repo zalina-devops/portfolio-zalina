@@ -995,6 +995,74 @@ ${historyStr}
   return { gameState, startGame, makeAttempt };
 };
 
+// ============ PDF RESUME GENERATOR ============
+const generateResumePDF = () => {
+  import('jspdf').then(({ default: jsPDF }) => {
+    const doc = new jsPDF();
+    
+    doc.setFillColor(10, 10, 15);
+    doc.rect(0, 0, 210, 297, 'F');
+    
+    doc.setTextColor(0, 255, 65);
+    doc.setFont('Courier', 'Bold');
+    doc.setFontSize(28);
+    doc.text('ZALINA', 105, 30, { align: 'center' });
+    
+    doc.setDrawColor(0, 255, 65);
+    doc.setLineWidth(0.5);
+    doc.line(20, 38, 190, 38);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(200, 200, 200);
+    doc.text('GitHub: github.com/zalina-devops', 105, 50, { align: 'center' });
+    doc.text('Email: z.devops19@proton.me', 105, 57, { align: 'center' });
+    doc.text('Location: Moscow, Russia', 105, 64, { align: 'center' });
+    
+    doc.setFontSize(16);
+    doc.setTextColor(77, 171, 247);
+    doc.text('EDUCATION', 20, 80);
+    doc.setDrawColor(77, 171, 247);
+    doc.line(20, 83, 190, 83);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(220, 220, 220);
+    doc.text('Moscow State College', 20, 93);
+    doc.setTextColor(180, 180, 180);
+    doc.text('Specialization: 09.02.07 — Information Systems Security', 20, 100);
+    doc.text('Year: 3rd (2 years remaining)', 20, 107);
+    doc.text('Goal: University enrollment in Applied Informatics (2028)', 20, 114);
+    
+    doc.setFontSize(16);
+    doc.setTextColor(151, 117, 250);
+    doc.text('SKILLS', 20, 132);
+    doc.setDrawColor(151, 117, 250);
+    doc.line(20, 135, 190, 135);
+    
+    const skills = [
+      ['Security:', 'Network Security, OWASP Top 10, Wireshark, Nmap'],
+      ['DevOps:', 'Docker, CI/CD, Linux, Bash, GitHub Actions'],
+      ['Development:', 'Python, JavaScript, React, Flask, HTML/CSS'],
+      ['Tools:', 'Git, VS Code, Postman, Figma, Terminal']
+    ];
+    
+    let y = 145;
+    skills.forEach(([category, items]) => {
+      doc.setTextColor(200, 200, 200);
+      doc.setFont('Courier', 'Bold');
+      doc.text(category, 20, y);
+      doc.setFont('Courier', 'Normal');
+      doc.text(items, 58, y);
+      y += 8;
+    });
+    
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Generated from portfolio-kernel.vercel.app', 105, 280, { align: 'center' });
+    
+    doc.save('Zalina_Resume.pdf');
+  });
+};
+
 // ============ COMMANDS ============
 const createCommands = (projects, projectsLoading, startGame, makeAttempt) => ({
   game: (input) => {
@@ -1163,6 +1231,14 @@ const createCommands = (projects, projectsLoading, startGame, makeAttempt) => ({
     color: '#ffb86c'
   }),
 
+  resume: () => {
+    generateResumePDF();
+    return {
+      output: '>>> Generating PDF resume... Check your downloads!',
+      color: '#50fa7b'
+    };
+  },
+
   matrix: () => ({
     output: 'Wake up, Neo... The Matrix has you...',
     color: '#00ff41',
@@ -1268,6 +1344,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
     { cmd: 'education', label: '🎓 education', color: '#f1fa8c', desc: 'Учёба' },
     { cmd: 'timeline', label: '🛤️ timeline', color: '#ff79c6', desc: 'Мой путь' },
     { cmd: 'contact', label: '📬 contact', color: '#ffb86c', desc: 'Контакты' },
+	{ cmd: 'resume', label: '📄 resume', color: '#50fa7b', desc: 'Скачать PDF-резюме' },
     { cmd: 'matrix', label: '🌧️ matrix', color: '#00ff41', desc: 'Пасхалка' },
     { cmd: 'game', label: '🎮 играть', color: '#8be9fd', desc: 'Взломай сервер (8 попыток)' },
   ];

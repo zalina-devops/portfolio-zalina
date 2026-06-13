@@ -56,6 +56,32 @@ const gradientShift = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
+const glitchEffect = keyframes`
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -1px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(1px, 3px); }
+  100% { transform: translate(0); }
+`;
+
+const glitchClip = keyframes`
+  0% { clip-path: inset(0 0 0 0); }
+  10% { clip-path: inset(20% 0 60% 0); }
+  20% { clip-path: inset(40% 0 40% 0); }
+  30% { clip-path: inset(60% 0 20% 0); }
+  40% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+`;
+
+const crtFlicker = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0.9; }
+  51% { opacity: 0.3; }
+  52% { opacity: 1; }
+  100% { opacity: 1; }
+`;
+
 // ============ KEYBOARD SOUND HOOK ============
 const useKeyboardSound = () => {
   const audioContextRef = useRef(null);
@@ -183,6 +209,59 @@ const AppContainer = styled.div`
   background: linear-gradient(135deg, #0a0a0f 0%, #0d1520 25%, #0f0a1a 50%, #0a1a15 75%, #0a0a0f 100%);
   background-size: 400% 400%;
   animation: ${gradientShift} 15s ease infinite;
+`;
+
+const GlitchOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  animation: ${props => props.active ? glitchEffect : 'none'} 0.3s ease-in-out;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    opacity: ${props => props.active ? 1 : 0};
+    transition: opacity 0.1s;
+  }
+  
+  &::before {
+    background: rgba(0, 255, 65, 0.05);
+    animation: ${props => props.active ? glitchClip : 'none'} 0.2s infinite;
+  }
+  
+  &::after {
+    background: rgba(255, 0, 234, 0.03);
+    animation: ${props => props.active ? glitchClip : 'none'} 0.15s infinite reverse;
+  }
+`;
+
+const CrtOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  opacity: ${props => props.active ? 1 : 0.3};
+  transition: opacity 0.3s;
 `;
 
 const MainLayout = styled.div`
@@ -1347,6 +1426,7 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
   const [inputHistory, setInputHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [promptFlash, setPromptFlash] = useState(false);
+  const [glitchActive, setGlitchActive] = useState(false);
   const inputRef = useRef(null);
   const bodyRef = useRef(null);
 
@@ -1408,7 +1488,6 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
     if (handler) {
       let result;
       
-      // Для game и help передаём полный input
       if (mainCmd === 'game' || mainCmd === 'help') {
         result = handler(input);
       } else {
@@ -1418,6 +1497,9 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
       setHistory(prev => [...prev, { type: 'output', text: result.output, color: result.color }]);
       return result;
     } else if (cmd !== '') {
+      setGlitchActive(true);
+      setTimeout(() => setGlitchActive(false), 400);
+      
       setHistory(prev => [...prev, {
         type: 'output',
         text: `command not found: ${cmd}. Type 'help' for options.${gameProps?.gameState ? '\nTip: Just type 4 digits to guess the code!' : ''}`,
@@ -1579,6 +1661,13 @@ const Terminal = ({ onSpecialCommand, projects, projectsLoading, keyboardSound, 
     </TerminalCard>
   );
 
+	  // Передаём глитч в App через onSpecialCommand
+	useEffect(() => {
+	  if (glitchActive) {
+		onSpecialCommand?.('glitch');
+	  }
+	}, [glitchActive]);
+
   return terminalContent;
 };
 
@@ -1733,6 +1822,7 @@ const DraggableTerminal = ({ onSpecialCommand, projects, projectsLoading, keyboa
 function App() {
   const [activeTab, setActiveTab] = useState('terminal');
   const [matrixActive, setMatrixActive] = useState(false);
+  const [glitchActive, setGlitchActive] = useState(false);
   const { projects, loading: projectsLoading } = useGitHubProjects('zalina-devops');
   const keyboardSound = useKeyboardSound();
   const gameHook = useHackGame();
@@ -1742,6 +1832,10 @@ function App() {
     if (special === 'matrix') {
       setMatrixActive(true);
       setTimeout(() => setMatrixActive(false), 10000);
+    }
+    if (special === 'glitch') {
+      setGlitchActive(true);
+      setTimeout(() => setGlitchActive(false), 500);
     }
   };
 
@@ -1758,7 +1852,9 @@ function App() {
       <GlobalStyles />
       <AppContainer>
         <MatrixRain active={matrixActive} />
-        
+        <GlitchOverlay active={glitchActive} />
+        <CrtOverlay active={matrixActive} />
+		
         <MainLayout>
           {/* HEADER */}
           <HeaderCard>
